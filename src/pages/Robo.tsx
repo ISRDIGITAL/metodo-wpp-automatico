@@ -29,6 +29,13 @@ const WHATSAPP_URL =
 const INSTAGRAM_URL = "https://instagram.com/oivansodre";
 
 const CTA_LABEL = "Quero meu Atendente 24h";
+const HERO_CTA_LABEL = "Ver como o Atendente 24h funciona";
+
+// O primeiro botão não vai direto ao checkout: leva à explicação da oferta.
+const goToExplanation = () => {
+  trackEvent("ViewContent", { content_name: "atendente_24h", place: "hero_explicacao" });
+  document.getElementById("como-funciona")?.scrollIntoView({ behavior: "smooth", block: "start" });
+};
 
 const goToCheckout = (place: string) => {
   trackEvent("InitiateCheckout", { content_name: "atendente_24h", place });
@@ -175,8 +182,16 @@ const FAQ = [
 /* PEÇAS                                                               */
 /* ------------------------------------------------------------------ */
 
-const Section = ({ children, className = "" }: { children: ReactNode; className?: string }) => (
-  <section className={`px-5 py-16 sm:py-24 ${className}`}>
+const Section = ({
+  children,
+  className = "",
+  id,
+}: {
+  children: ReactNode;
+  className?: string;
+  id?: string;
+}) => (
+  <section id={id} className={`scroll-mt-4 px-5 py-16 sm:py-24 ${className}`}>
     <div className="mx-auto max-w-3xl">{children}</div>
   </section>
 );
@@ -293,7 +308,7 @@ const Robo = () => {
             sozinho, sem programar e sem pagar atendente.
           </p>
           <div className="mt-9 flex flex-col items-center gap-3">
-            <PrimaryCTA onClick={() => goToCheckout("hero")}>{CTA_LABEL}</PrimaryCTA>
+            <PrimaryCTA onClick={goToExplanation}>{HERO_CTA_LABEL}</PrimaryCTA>
             <p className="text-xs text-muted-foreground">
               {PRICE} pagamento único · Garantia de 7 dias
             </p>
@@ -359,7 +374,7 @@ const Robo = () => {
       </Section>
 
       {/* 5. MECANISMO DA SOLUÇÃO */}
-      <Section>
+      <Section id="como-funciona">
         <Reveal>
           <Eyebrow>O mecanismo</Eyebrow>
           <H2>Atendente 24h: uma IA que atende o seu WhatsApp o dia inteiro e a noite inteira</H2>
