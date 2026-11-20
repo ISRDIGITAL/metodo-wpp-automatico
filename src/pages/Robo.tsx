@@ -28,6 +28,10 @@ const WHATSAPP_URL =
   "https://api.whatsapp.com/send/?phone=554796528371&text=Oi+Ivan%2C+quero+o+Atendente+24h+no+meu+WhatsApp.&type=phone_number&app_absent=0";
 const INSTAGRAM_URL = "https://instagram.com/oivansodre";
 
+// Link da VSL. Cole aqui o link do vídeo (YouTube, Vimeo ou arquivo .mp4).
+// Enquanto estiver vazio, a página mostra o quadro do vídeo reservado.
+const VSL_URL = "";
+
 const CTA_LABEL = "Quero meu Atendente 24h";
 const HERO_CTA_LABEL = "Ver como o Atendente 24h funciona";
 
@@ -209,6 +213,61 @@ const brl = (n: number) =>
 
 const clamp = (v: string, max: number) => Math.min(Math.max(Number(v.replace(/\D/g, "")) || 0, 0), max);
 
+/** Converte links comuns do YouTube/Vimeo em link de embed. */
+const toEmbed = (url: string) => {
+  const yt = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([\w-]{6,})/);
+  if (yt) return `https://www.youtube.com/embed/${yt[1]}?rel=0&modestbranding=1&playsinline=1`;
+  const vm = url.match(/vimeo\.com\/(?:video\/)?(\d+)/);
+  if (vm) return `https://player.vimeo.com/video/${vm[1]}`;
+  return url;
+};
+
+/** VSL: quadro 16:9 logo abaixo do hero. Mostra o vídeo quando VSL_URL estiver preenchida. */
+const VslBlock = () => {
+  const isFile = /\.(mp4|webm|mov)(\?.*)?$/i.test(VSL_URL);
+  return (
+    <section id="vsl" className="px-5 pb-14 sm:pb-20">
+      <div className="mx-auto max-w-3xl">
+        <p className="mb-4 text-center text-[11px] font-semibold uppercase tracking-[0.2em] text-primary">
+          Assista antes de continuar
+        </p>
+        <div className="shadow-elegant relative aspect-video w-full overflow-hidden rounded-2xl border border-white/10 bg-surface">
+          {VSL_URL ? (
+            isFile ? (
+              <video
+                className="absolute inset-0 h-full w-full"
+                src={VSL_URL}
+                controls
+                playsInline
+                preload="metadata"
+              />
+            ) : (
+              <iframe
+                className="absolute inset-0 h-full w-full"
+                src={toEmbed(VSL_URL)}
+                title="Atendente 24h: como funciona"
+                allow="autoplay; fullscreen; picture-in-picture"
+                allowFullScreen
+                loading="lazy"
+              />
+            )
+          ) : (
+            <div className="bg-hero-glow absolute inset-0 flex flex-col items-center justify-center gap-4 px-6 text-center">
+              <span className="flex h-16 w-16 items-center justify-center rounded-full border border-primary/40 bg-primary/10">
+                <span className="ml-1 h-0 w-0 border-y-[11px] border-l-[18px] border-y-transparent border-l-primary" />
+              </span>
+              <p className="font-display text-lg font-bold leading-snug sm:text-2xl">
+                Como o Atendente 24h funciona, em 90 segundos
+              </p>
+              <p className="text-xs text-muted-foreground">O vídeo será publicado aqui.</p>
+            </div>
+          )}
+        </div>
+      </div>
+    </section>
+  );
+};
+
 /** Calculadora: quanto fica na mesa por mês. Começa com valores de exemplo. */
 const Calculator = ({ onCta }: { onCta: () => void }) => {
   const [chats, setChats] = useState(60);
@@ -315,6 +374,9 @@ const Robo = () => {
           </div>
         </div>
       </header>
+
+      {/* VSL */}
+      <VslBlock />
 
       {/* 2. BARRA: o que o produto tem */}
       <div className="border-y border-white/[0.07] bg-surface/60 px-5 py-4">
