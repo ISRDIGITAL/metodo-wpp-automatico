@@ -66,11 +66,12 @@ const ChatDemo = () => {
           </div>
           <div className="leading-tight">
             <p className="text-sm font-semibold text-white">Assistente da empresa</p>
-            <p className="text-[11px] text-white/50">{typing ? "digitando..." : "online"}</p>
+            <p className="text-[11px] text-white/50">{typing ? "digitando..." : "online 24h"}</p>
           </div>
         </div>
 
         <div className="flex min-h-[420px] flex-col gap-2 px-3 py-4">
+          <p className="mx-auto mb-1 rounded-full bg-white/5 px-3 py-1 text-[11px] text-white/50">Domingo · 23:47</p>
           {MESSAGES.slice(0, shown).map((m, i) => (
             <div
               key={i}
